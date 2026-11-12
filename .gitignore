@@ -1,0 +1,12 @@
+# Conference-specific values: form ids, folder names, addresses, the
+# rubric if it names people. This repo is public; your event is not.
+config/*
+!config/*.example
+local/
+
+# Agent-written material pulled out for safekeeping
+agent-backup/
+
+*.env
+!*.env.example
+secrets/
