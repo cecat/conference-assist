@@ -313,11 +313,12 @@ Resumed after a context handoff. Q1–Q12 above stand and were not reopened.
 
 **The round opened with a discovery that reshaped the tree.** Asked for the
 rubric, the owner pointed at a file that already existed — and it turned out
-to belong to a *complete prior implementation*. **ChatTPC26**, the agent that
-ran TPC26, is preserved at `~/code/Spark-OpenClaw/chattpc26/`: 16 runbooks,
-19 scripts, 10 email templates, three months of dated memory, a CHANGELOG
-recording five real bugs, and a HIBERNATION.md written when it was wound down
-on 2026-06-01.
+to belong to a *complete prior implementation*. The agent that ran the
+previous edition of this conference is preserved locally: 16 runbooks, 19
+scripts, 10 email templates, three months of dated memory, a CHANGELOG
+recording five real bugs, and a HIBERNATION.md written when it was wound
+down on 2026-06-01. It is called **the prior agent** below; its tree is
+local and not published.
 
 Much of what this document lists as "never asked" was in fact *answered by
 running a conference for three months*. The remaining questions are therefore
@@ -341,8 +342,8 @@ numeric score? Recommended verdict only; a score implies precision this
 screen does not have.
 
 **A.** "I have the review criteria - it is in
-`/home/catlett/code/Spark-OpenClaw/chattpc26/LIGHTNING-TALK-REVIEW-CRITERIA.md`.
-The verdict is either to ask Charlie to work with the author or mark it
+the prior agent's `LIGHTNING-TALK-REVIEW-CRITERIA.md`.
+The verdict is either to ask the owner to work with the author or mark it
 accepted"
 
 **Resolution — better than what was proposed.** The file already contains
@@ -364,17 +365,17 @@ settles open item 2.
 
 **Q.** `SPEC.md` has LuoJi doing the conference work *and* holding
 `gmail.modify`, bound only by a line in `SOUL.md`. The 2026 system was
-stronger: ChatTPC26 **could not send** — it wrote JSON to
+stronger: the prior agent **could not send** — it wrote JSON to
 `/shared/email/outbox/` with `status: "pending"`, **LuoJi** approved or
 rejected, and a cron sent only approved mail. The Q3 tiering was already a
 field in that JSON. The gate fired for real: `CHANGELOG.md:30` records LuoJi
 rejecting the malformed `{{PERSONAL_MESSAGE}}` email before it reached an
-author. Four options: (1) two agents as in 2026; (2) one agent, outbox
+author. Four options: (1) two agents as in the prior system; (2) one agent, outbox
 retained, owner approves; (3) one agent, instruction only — what SPEC.md
 says now; (4) two agents, new division of labour.
 
-➡️ **(2).** The second agent earned its place when ChatTPC26 sent *as
-Charlie*; the agent now has its own account, so a bad email is embarrassing
+➡️ **(2).** The second agent earned its place when the prior agent sent *as
+the owner*; the agent now has its own account, so a bad email is embarrassing
 rather than forged. What caught the real bug was the *queue* — a durable
 artifact reviewable before delivery — not that a model reviewed it.
 
@@ -398,11 +399,11 @@ person's two-agent VM.
 
 ## What the prior system already answers
 
-Findings from `~/code/Spark-OpenClaw/chattpc26/`, gathered 2026-11-12. These
+Findings from the prior agent's tree, gathered 2026-11-12. These
 are *observations of what ran*, not decisions — each still needs a keep-or-
 change from the owner, but none needs to be invented.
 
-**The approval boundary was structural, not instructional.** ChatTPC26 could
+**The approval boundary was structural, not instructional.** The prior agent could
 not send mail. It wrote a JSON file to `/shared/email/outbox/` with
 `status: "pending"`; a *second agent* reviewed it; a cron sent only what was
 approved. `EMAIL.md:104` — *"Do NOT send email directly via gog gmail send.
@@ -440,8 +441,9 @@ warmth/context."* Deliberate and documented, to keep counts and dates out of
 reach of a reasoning error.
 
 **Five bugs worth not repeating**, from `CHANGELOG.md`: a self-defer loop
-that re-ran a whole runbook and sent **12 authors duplicate acceptance
-emails** (2026-04-23); an off-by-one that wrote a date into the header row;
+that re-ran a whole runbook and sent **multiple authors duplicate
+acceptance emails** (2026-04-23); an off-by-one that wrote a date into the
+header row;
 a Slack post that reported "no new submissions" because it re-read the sheet
 *after* writing to it; an email that went out containing a literal
 `{{PERSONAL_MESSAGE}}`; and sheet syncs aborting on transient Google 503s
