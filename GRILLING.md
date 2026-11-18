@@ -305,6 +305,155 @@ Recorded here because they bear on the conference layer:
 
 ---
 
+---
+
+# Round 2 — 2026-11-12
+
+Resumed after a context handoff. Q1–Q12 above stand and were not reopened.
+
+**The round opened with a discovery that reshaped the tree.** Asked for the
+rubric, the owner pointed at a file that already existed — and it turned out
+to belong to a *complete prior implementation*. **ChatTPC26**, the agent that
+ran TPC26, is preserved at `~/code/Spark-OpenClaw/chattpc26/`: 16 runbooks,
+19 scripts, 10 email templates, three months of dated memory, a CHANGELOG
+recording five real bugs, and a HIBERNATION.md written when it was wound down
+on 2026-06-01.
+
+Much of what this document lists as "never asked" was in fact *answered by
+running a conference for three months*. The remaining questions are therefore
+mostly **"keep or change?"** rather than **"decide from nothing"** — a much
+cheaper kind of question, and one where the prior answer is evidence rather
+than a guess.
+
+## Q13: The rubric — criteria, or worked examples?
+
+**Q.** The screen checks for sales pitches and out-of-scope topics. "Sales
+pitch" is the hard one: many good talks at a technical programme come from
+vendor employees describing what their company built, so "describes a
+product" cannot be the test or far more than seven would have flagged.
+Three forms: (1) criteria you write, (2) the seven flagged abstracts plus
+some that passed, as worked examples, (3) both.
+
+➡️ **(2), leaning to (3).** Hand over the real abstracts and let the criteria
+be derived from them, then corrected — you recognise a wrong rule faster than
+you compose a right one. Plus a sub-question: verdict with a reason, or a
+numeric score? Recommended verdict only; a score implies precision this
+screen does not have.
+
+**A.** "I have the review criteria - it is in
+`/home/catlett/code/Spark-OpenClaw/chattpc26/LIGHTNING-TALK-REVIEW-CRITERIA.md`.
+The verdict is either to ask Charlie to work with the author or mark it
+accepted"
+
+**Resolution — better than what was proposed.** The file already contains
+what the examples were meant to produce: two criteria, each with an explicit
+**do-NOT-flag** list (vendors describing genuine results are fine; tools used
+inside a scientific workflow are fine; open-source frameworks in a research
+context are fine) and a stated default — *"When in doubt, mark as accepted."*
+It also carries an instruction to future editors: *"the agent reads it fresh
+before each review."* The rubric is a **live file the owner edits**, not text
+baked into a skill.
+
+**The verdict answer collapses the state machine.** Not
+accepted/rejected/fix-requested, but **accepted (✅)** or **flag for the owner
+to work with the author (❓)**. *Rejection is not a state the agent can
+reach.* That is narrower and safer than `SPEC.md` described, and it largely
+settles open item 2.
+
+## Q14: One agent, or two? — the approval gate
+
+**Q.** `SPEC.md` has LuoJi doing the conference work *and* holding
+`gmail.modify`, bound only by a line in `SOUL.md`. The 2026 system was
+stronger: ChatTPC26 **could not send** — it wrote JSON to
+`/shared/email/outbox/` with `status: "pending"`, **LuoJi** approved or
+rejected, and a cron sent only approved mail. The Q3 tiering was already a
+field in that JSON. The gate fired for real: `CHANGELOG.md:30` records LuoJi
+rejecting the malformed `{{PERSONAL_MESSAGE}}` email before it reached an
+author. Four options: (1) two agents as in 2026; (2) one agent, outbox
+retained, owner approves; (3) one agent, instruction only — what SPEC.md
+says now; (4) two agents, new division of labour.
+
+➡️ **(2).** The second agent earned its place when ChatTPC26 sent *as
+Charlie*; the agent now has its own account, so a bad email is embarrassing
+rather than forged. What caught the real bug was the *queue* — a durable
+artifact reviewable before delivery — not that a model reviewed it.
+
+**A.** "Let's go with two agents, but I think we should consider two things.
+The first are the skills, which are orthogonal to how we structure the
+agents who will execute those skills. The second is the fashion in which we
+execute the skills, who does what, and what (if any) gates we put up for
+actions like email."
+
+**Resolution: (1), two agents — and a correction to the question itself.**
+The recommendation was rejected, and the framing with it. The question had
+bundled two decisions that are separable: *what the skills do* and *who runs
+them under what gates*. The owner split them.
+
+**The consequence for this repo is structural.** A skill must not know which
+agent runs it, whether a second agent approves it, or whether an outbox
+exists. Those are deployment facts. This repo ships the skills; how they are
+wired is a separate document and a separate decision — which means the repo
+stays honest about being standalone, rather than quietly encoding one
+person's two-agent VM.
+
+## What the prior system already answers
+
+Findings from `~/code/Spark-OpenClaw/chattpc26/`, gathered 2026-11-12. These
+are *observations of what ran*, not decisions — each still needs a keep-or-
+change from the owner, but none needs to be invented.
+
+**The approval boundary was structural, not instructional.** ChatTPC26 could
+not send mail. It wrote a JSON file to `/shared/email/outbox/` with
+`status: "pending"`; a *second agent* reviewed it; a cron sent only what was
+approved. `EMAIL.md:104` — *"Do NOT send email directly via gog gmail send.
+Ever."* The tiering the owner specified in Q3 was implemented as a field in
+that JSON: `compose-email.py:226` writes track notifications with
+`status: "approved"` (auto-send), `send-accept-emails.py:191` writes
+acceptances with `status: "pending"` (human gate). **The 2026 system already
+honoured the Q3 boundary, in code rather than in prose.**
+
+**Dedup lived in the spreadsheet, not in agent memory.** Column B
+("Notified") of the review sheet is the single source of truth;
+`send-accept-emails.py` stamps it *before* renaming the draft into the
+outbox, so the worst case is a duplicate date rather than a duplicate email
+to an author.
+
+**Cadence, as actually run:** abstract review Mon+Thu 16:00 UTC; track
+notifications Mon+Thu 04:00 UTC, *skipping tracks with no new submissions*;
+daily status sheet 06:00 UTC; registration ramp chart daily; ramp emails
+daily or weekly **per recipient preference**, recorded in `CONTACTS.md`.
+This answers open item 4 with measured practice.
+
+**Track leaders saw titles, names and institutions — never verdicts.**
+`templates/email-track-notification.json` lists required content and review
+flags are absent from it. This answers open item 3.
+
+**It never answered inbound questions.** There is no runbook, script or
+template for fielding questions from authors or attendees. The FAQ
+requirement from Q4 is genuinely new work, not a port — and the "answer from
+the source" rule has no precedent to lean on.
+
+**Facts came from code, judgement from the model.** `compose-email.py:17` —
+*"scripts own all factual content (salutation, counts, submission list, URLs,
+signature, footer). The LLM contributes ONE optional sentence per email for
+warmth/context."* Deliberate and documented, to keep counts and dates out of
+reach of a reasoning error.
+
+**Five bugs worth not repeating**, from `CHANGELOG.md`: a self-defer loop
+that re-ran a whole runbook and sent **12 authors duplicate acceptance
+emails** (2026-04-23); an off-by-one that wrote a date into the header row;
+a Slack post that reported "no new submissions" because it re-read the sheet
+*after* writing to it; an email that went out containing a literal
+`{{PERSONAL_MESSAGE}}`; and sheet syncs aborting on transient Google 503s
+for want of a retry. Three of the five are **ordering or idempotency** bugs
+in recurring jobs.
+
+**The 2026 job was broader than `SPEC.md` admits:** WG/BOF slot requests and
+breakout scheduling, an AI4S tutorial cross-listing, per-institution summary
+reports, a central daily-status sheet, a *submission* ramp as well as a
+registration ramp, and Slack as a first-class output channel alongside email.
+`SPEC.md` mentions none of these.
+
 ## What was never asked
 
 Gaps in the grilling itself, listed so the next session can close them
